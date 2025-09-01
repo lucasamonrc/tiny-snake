@@ -3,6 +3,7 @@ local push = require 'lib.push'
 
 require 'elements.snake'
 require 'elements.snake_body'
+require 'elements.food'
 
 WINDOW_WIDTH = 960
 WINDOW_HEIGHT = 720
@@ -11,6 +12,7 @@ VIRTUAL_WIDTH = 320
 VIRTUAL_HEIGHT = 240
 
 local snake = Snake(VIRTUAL_WIDTH / 2 - 4, VIRTUAL_HEIGHT / 2 - 4, 8, 3)
+local food = Food(VIRTUAL_WIDTH / 2 - 4, VIRTUAL_HEIGHT / 2 - 4 + 24, 8)
 
 function love.load()
     love.window.setTitle("Tiny Snake")
@@ -64,6 +66,12 @@ function love.update(dt)
         snake.direction = 'right'
     end
 
+    if snake:collides(food) then
+        snake.grow = true
+        food.x = VIRTUAL_WIDTH / 2 - 4
+        food.y = VIRTUAL_HEIGHT / 2 - 4 - 24
+    end
+
     snake:update(dt)
 
     love.keyboard.keysPressed = {}
@@ -79,6 +87,7 @@ function love.draw()
     love.graphics.printf('Hello Snake!', 0, 20, VIRTUAL_WIDTH, 'center')
 
     snake:render()
+    food:render()
 
     push:finish()
 end
