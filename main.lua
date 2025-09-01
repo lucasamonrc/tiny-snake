@@ -54,13 +54,13 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.update(dt)
-    if love.keyboard.wasPressed('w') and snake.direction ~= 'down' then
+    if love.keyboard.wasPressed('up') and snake.direction ~= 'down' then
         snake.direction = 'up'
-    elseif love.keyboard.wasPressed('s') and snake.direction ~= 'up' then
+    elseif love.keyboard.wasPressed('down') and snake.direction ~= 'up' then
         snake.direction = 'down'
-    elseif love.keyboard.wasPressed('a') and snake.direction ~= 'right' then
+    elseif love.keyboard.wasPressed('left') and snake.direction ~= 'right' then
         snake.direction = 'left'
-    elseif love.keyboard.wasPressed('d') and snake.direction ~= 'left' then
+    elseif love.keyboard.wasPressed('right') and snake.direction ~= 'left' then
         snake.direction = 'right'
     end
 
