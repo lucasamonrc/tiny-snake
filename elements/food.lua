@@ -1,9 +1,9 @@
 Food = Class {}
 
-function Food:init(x, y, size)
-    self.x = x
-    self.y = y
-    self.size = size
+function Food:init(cell)
+    self.x = cell.x
+    self.y = cell.y
+    self.size = cell.size
 end
 
 function Food:render()

@@ -4,6 +4,7 @@ local push = require 'lib.push'
 require 'elements.snake'
 require 'elements.snake_body'
 require 'elements.food'
+require 'elements.room'
 
 WINDOW_WIDTH = 960
 WINDOW_HEIGHT = 720
@@ -11,10 +12,15 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 320
 VIRTUAL_HEIGHT = 240
 
-local snake = Snake(VIRTUAL_WIDTH / 2 - 4, VIRTUAL_HEIGHT / 2 - 4, 8, 3)
-local food = Food(VIRTUAL_WIDTH / 2 - 4, VIRTUAL_HEIGHT / 2 - 4 + 24, 8)
+local snake
+local food
+local room
+
+local score = 0
 
 function love.load()
+    math.randomseed(os.time())
+
     love.window.setTitle("Tiny Snake")
 
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -35,6 +41,15 @@ function love.load()
         resizable = true,
         vsync = true
     })
+
+    room = Room(
+        (VIRTUAL_WIDTH / 2) - (ROOM_WIDTH / 2),
+        (VIRTUAL_HEIGHT / 2) - (ROOM_HEIGHT / 2),
+        8
+    )
+
+    snake = Snake(room.cells[math.floor(#room.cells / 2)])
+    food = Food(room:randomCell())
 
     love.keyboard.keysPressed = {}
 end
@@ -66,10 +81,30 @@ function love.update(dt)
         snake.direction = 'right'
     end
 
-    if snake:collides(food) then
+    if snake:collidesSelf() then
+        Sounds['death']:play()
+    end
+
+    local head = snake:head()
+    if head.x < room.x
+        or head.y < room.y
+        or head.x >= room.x + ROOM_WIDTH
+        or head.y >= room.y + ROOM_HEIGHT then
+        Sounds['death']:play()
+    end
+
+    if snake:collidesFood(food) then
+        Sounds['pickup']:play()
+        score = score + 1
         snake.grow = true
-        food.x = VIRTUAL_WIDTH / 2 - 4
-        food.y = VIRTUAL_HEIGHT / 2 - 4 - 24
+
+        local cell
+        repeat
+            cell = room:randomCell()
+        until not snake:onBody(cell)
+
+        food.x = cell.x
+        food.y = cell.y
     end
 
     snake:update(dt)
@@ -84,10 +119,14 @@ function love.draw()
 
     love.graphics.setFont(LargeFont)
 
-    love.graphics.printf('Hello Snake!', 0, 20, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf('Hello Snake!', 0, 10, VIRTUAL_WIDTH, 'center')
 
-    snake:render()
+    room:render()
     food:render()
+    snake:render()
+
+    love.graphics.setFont(SmallFont)
+    love.graphics.printf('Score: ' .. tostring(score), 10, 10, VIRTUAL_WIDTH, 'left')
 
     push:finish()
 end

@@ -6,12 +6,8 @@ function SnakeBody:init(x, y, size)
     self.size = size
 end
 
-function SnakeBody:update(x, y)
-    self.x = x
-    self.y = y
-end
-
 function SnakeBody:render()
+    love.graphics.setColor(155 / 255, 188 / 255, 15 / 255, 255 / 255)
     love.graphics.rectangle(
         'fill',
         self.x,
@@ -19,4 +15,5 @@ function SnakeBody:render()
         self.size,
         self.size
     )
+    love.graphics.setColor(1, 1, 1, 1)
 end
