@@ -1,51 +1,47 @@
-# Tiny Snake
+<div align="center">
 
-A small Snake game built with LÖVE (Love2D).
+# 🐍 Tiny Snake
 
-## Overview
+**A small, retro Snake game built with [LÖVE](https://love2d.org) and Lua.**
 
--   Minimal grid-based Snake. The code uses a simple state stack for title, countdown, play, and score.
+![Lua](https://img.shields.io/badge/Lua-2C2D72?logo=lua&logoColor=white)
+![LÖVE](https://img.shields.io/badge/L%C3%96VE-11.x-e64998)
 
-## Requirements
+<img src=".github/assets/gameplay.gif" alt="Tiny Snake gameplay" width="480" />
 
--   LÖVE / Love2D installed (https://love2d.org).
+</div>
 
-## Run
+## Play
 
-From the repository root run:
+Install [LÖVE 11](https://love2d.org), then run from the repository root:
 
-```zsh
+```bash
 love .
 ```
 
-## Controls
+| Key        | Action          |
+| ---------- | --------------- |
+| `Enter`    | Start / confirm |
+| Arrow keys | Steer the snake |
+| `Esc`      | Quit            |
 
--   Enter: start / confirm
--   Arrow keys: move the snake
--   Escape: quit
+## How it works
 
-## Game logic
+The game renders at 320×240 and is scaled up 3× with [push](https://github.com/Ulydev/push) for crisp pixel art.
+A small **state stack** (`game.lua`) moves between `title → countdown → play → score`.
 
--   The project uses discrete update ticks to advance the snake on a grid (see `states/play.lua`).
--   The play area is a `Room` (grid). Food is placed on random free cells inside the room (`elements/room.lua`).
--   The `Snake` tracks a list of body segments and a direction (`elements/snake.lua`). On each tick the head moves one cell; when eating food the snake grows by keeping the tail segment instead of removing it.
--   Collisions:
-    -   Food: when the head reaches a food cell the score increases and a new food is spawned.
-    -   Self: if the head collides with any body segment the play state ends and the score state is shown.
-    -   Walls: head position is validated against the room bounds; leaving the bounds ends the game.
--   Game flow is managed by states in `game.lua` and files under `states/`.
+- **Ticks, not frames:** the snake advances one grid cell every 0.25s, whatever your display's refresh rate.
+- **Growth:** on each tick the head moves forward. When the snake eats, it keeps its tail segment instead of
+  dropping it.
+- **Food** spawns on a random free cell in the `Room` grid, never on the snake's body.
+- **Game over** when the head leaves the room or hits the snake's own body.
 
-## Assets
-
--   Fonts and sound effects are in the `assets/` folder and referenced from `main.lua`.
-
-## Files of interest
-
--   `main.lua` — entry point and LÖVE callbacks
--   `game.lua` — simple state stack / manager
--   `elements/snake.lua` — snake movement, growth, and collision helpers
--   `elements/room.lua` — playfield grid and random cell placement
--   `elements/food.lua` — food representation
--   `states/title.lua`, `states/countdown.lua`, `states/play.lua`, `states/score.lua` — UI and game states
-
-That's all required to run and inspect the game logic.
+```
+main.lua              entry point and LÖVE callbacks
+game.lua              state stack
+elements/snake.lua    movement, growth, collision helpers
+elements/room.lua     playfield grid, random cell placement
+elements/food.lua     food
+states/*.lua          title, countdown, play, score
+assets/               font and sound effects
+```
